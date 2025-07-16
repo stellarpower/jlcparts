@@ -605,7 +605,8 @@ export class ComponentOverview extends React.Component {
 
                     // The value of the attribute for this component - i.e. 10k2 for "Resistance" column
                     var attributeValue = componentInTable.attributes[attributeName];
-                    var formatted =  formatAttribute(attributeValue);
+                    var formatted =  formatAttribute(attributeValue, attributeName == "Category");
+
 
                     return formatted;
                 }
@@ -668,7 +669,8 @@ export class ComponentOverview extends React.Component {
                             className="w-full"
                             headerClassName="bg-blue-500"
                             header={header}
-                            data={filteredComponents}
+                            data={  filteredComponents  }
+                            allCategories={ this.state.categories }
                             evenRowClassName="bg-gray-100"
                             oddRowClassName="bg-gray-300"
                             keyFun={item => item.lcsc}

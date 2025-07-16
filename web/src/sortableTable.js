@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import produce from 'immer';
 import { Waypoint } from 'react-waypoint';
+import { findCategoryById } from './componentTable.js'
 
 
 function SortableHeaderField(props) {
@@ -49,6 +50,10 @@ export class SortableTable extends React.Component {
             sortDirection: "asc",
             visibleItems: 100
         };
+
+        this.allCategories = props.allCategories
+        this.allSubcategories = this.allCategories.map(category => category.subcategories).flat()
+        // Passing in categories for manual lookup
     }
 
     componentDidUpdate(prevProps) {
