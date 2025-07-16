@@ -57,14 +57,25 @@ function componentText(component) {
     ).toLocaleLowerCase();
 }
 
+
+
 export function formatAttribute(attribute) {
+
     let varNames = Object.keys(attribute.values).map(x => "\\${" + x + "}");
 
     let regex = new RegExp('(' + varNames.join('|') + ')', 'g');
+
     return attribute.format.replace(regex, match => {
         let name = match.slice(2, -1);
         let value = attribute.values[name];
-        return quantityFormatter(value[1])(value[0]);
+
+        // Map from [ "chip resistor 0201", "string" ] or [ "5MHz", "frequency" ] to a number thta is easier to work with, or somehting like that.
+        var unitType    = value[1];
+        var actualValue = value[0];
+
+
+
+        return quantityFormatter(unitType)(actualValue);
     });
 }
 
@@ -574,25 +585,35 @@ export class ComponentOverview extends React.Component {
                 }
             },
         ];
-        for (let attribute of this.state.tableIncludedProperties) {
-            let getter = x => {
-                if (attribute in x.attributes)
-                    return formatAttribute(x.attributes[attribute]);
+        for (let attributeName of this.state.tableIncludedProperties) {
+            let getter = componentInTable => {
+
+                // Many attributes do not apply to all components - "inductance" would not apply if we search by number and many are not
+                // inductors, for example. So we need to skip this if the attriubte doesn't have a value for this component and produce an empty cell.
+                if (attributeName in componentInTable.attributes){
+
+                    // The value of the attribute for this component - i.e. 10k2 for "Resistance" column
+                    var attributeValue = componentInTable.attributes[attributeName];
+                    var formatted =  formatAttribute(attributeValue);
+
+                    return formatted;
+                }
+
                 return "";
             }
 
             let comparator = (x, y) => {
-                let val1 = x.attributes[attribute];
-                let val2 = y.attributes[attribute];
+                let val1 = x.attributes[attributeName];
+                let val2 = y.attributes[attributeName];
                 return attributeComparator(val1, val2);
             }
 
             header.push( {
-                name: attribute,
+                name: attributeName,
                 sortable: true,
                 displayGetter: getter,
                 comparator: comparator,
-                onDelete: () => this.handleIncludeInTable(attribute, false),
+                onDelete: () => this.handleIncludeInTable(attributeName, false),
                 className: "text-center"
             });
         }
