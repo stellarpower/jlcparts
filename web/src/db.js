@@ -19,7 +19,9 @@ db.version(2).stores({
 
 
 const SOURCE_PATH = "data";
-const dbWebPath = `${SOURCE_PATH}/all.jsonlines.tar`;
+
+// Will this cause CORS issues, or is it considered passive content?
+const dbWebPath = "https://dougy83.github.io/jlcparts/data/all.jsonlines.tar";  //`${SOURCE_PATH}/all.jsonlines.tar`;
 
 let jsonlines = {}; // copy of the database in memory so we only access the database once (doesn't really matter - it would be pretty fast anyway)
 async function getJsonlines() {
