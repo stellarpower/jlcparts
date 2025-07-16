@@ -59,7 +59,9 @@ function componentText(component) {
 
 
 
-export function formatAttribute(attribute) {
+// Whatever templating is used below, the formatting for categories should be specified there
+// No idea where that enters the system so isCategory is a hack to handle it properly.
+export function formatAttribute(attribute, isCategory = false) {
 
     let varNames = Object.keys(attribute.values).map(x => "\\${" + x + "}");
 
@@ -73,7 +75,16 @@ export function formatAttribute(attribute) {
         var unitType    = value[1];
         var actualValue = value[0];
 
+        // Format here; the original must be unperturbed in order not to have duplicates.
+        if (isCategory){
+            actualValue = actualValue.name1 + " :: " + actualValue.name2;
+            // Skip quantity formatting; a category is never a quntity.
+            // Some components appear in multiple top-level categories - thermistors come under sensors and under resistors
+            // We will have duplicates therefore, so for user sanity it makes sense to specify both sections even if this is more verbose;
+            // they may then need to select multiple to refine the search
 
+            return actualValue;
+        }
 
         return quantityFormatter(unitType)(actualValue);
     });
