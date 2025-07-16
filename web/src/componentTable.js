@@ -1169,10 +1169,10 @@ class PropertySelector extends React.Component {
         options.sort((a, b) => {
             return attributeComparator(a.value, b.value, this.state.sortBy);
         })
-        return options.map(x => ({
-            key: x.key,
-            value: formatAttribute(x.value),
-            componentCount: x.componentCount
+        return options.map(option => ({
+            key: option.key,
+            value: formatAttribute(option.value, this.props.item.property == "Category"),
+            componentCount: option.componentCount
         }));
     }
 
