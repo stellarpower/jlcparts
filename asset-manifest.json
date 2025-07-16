@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "https://stellarpower.github.io/jlcparts/static/css/main.9b4e4991.css",
+    "main.js": "https://stellarpower.github.io/jlcparts/static/js/main.2794c460.js",
+    "index.html": "https://stellarpower.github.io/jlcparts/index.html",
+    "static/media/sliders.svg": "https://stellarpower.github.io/jlcparts/static/media/sliders.6ff4019621accc88343b86ca425a4761.svg",
+    "main.9b4e4991.css.map": "https://stellarpower.github.io/jlcparts/static/css/main.9b4e4991.css.map",
+    "main.2794c460.js.map": "https://stellarpower.github.io/jlcparts/static/js/main.2794c460.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9b4e4991.css",
+    "static/js/main.2794c460.js"
+  ]
+}
