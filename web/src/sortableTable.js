@@ -42,6 +42,47 @@ function SortableHeaderField(props) {
     </>
 }
 
+
+function fillTableCell(cell, rowFromDataModel, allSubcategories){
+
+
+
+    // It seems some components are missing category in the pretty attributes
+    var componentHasCategory = "Category" in rowFromDataModel.attributes;
+    // So we will hardcode to look it up from the ID.
+
+
+
+    // Canonical backend ID; presume there is only one (sub)category
+    // but it appears in multiple locations in the tree that one can select from the UI.
+    var numericalCategoryID  = rowFromDataModel.category;
+
+
+    //var categoryTextFromID = findCategoryById(allCategories, numericalCategoryID);
+    var category             = allSubcategories.find(subcategory => subcategory.key == numericalCategoryID);
+
+
+    // TODO - display the main category too? It's not one-to-one and it will overflow the table easily.
+    // Maybe add the ID as reference?
+    var categoryText         = category.value
+
+
+    if (cell.name == "Category")
+        return categoryText;
+
+    // Else if not category, continue with the original method.
+    // Aside form handling categories, some components seem to be missing properties here even when they are present in the JLCPCB site or in
+    // the raw values from the database
+
+    var formattedUsingProperties = cell.displayGetter(rowFromDataModel)
+
+    return formattedUsingProperties;
+
+}
+
+
+
+
 export class SortableTable extends React.Component {
     constructor(props) {
         super(props)
@@ -147,7 +188,7 @@ export class SortableTable extends React.Component {
                                 {
                                     this.props.header.map(cell => {
                                         return <td key={cell.name} className={cell.className}>
-                                            { cell.displayGetter(row) }
+                                            {  fillTableCell(cell, row, this.allSubcategories)  }
                                         </td>
                                     })
                                 }
