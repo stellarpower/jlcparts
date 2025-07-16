@@ -6,7 +6,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { Link } from 'react-scroll';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { saveAs } from 'file-saver';
-import { SortableTable } from "./sortableTable"
+import { SortableTable, manuallyGetCategory } from "./sortableTable"
 import { quantityComparator, quantityFormatter } from "./units";
 import { AttritionInfo, getQuantityPrice } from "./jlc"
 import { naturalCompare } from '@discoveryjs/natural-compare';
@@ -177,6 +177,8 @@ export class ZoomableLazyImage extends React.Component {
         )
     }
 }
+
+
 
 export class ComponentOverview extends React.Component {
     constructor(props) {
@@ -383,23 +385,39 @@ export class ComponentOverview extends React.Component {
       return '';
     }
 
+    quoteForCSV(text){
+        return '"' + this.extractText(text).trim().replace('"', "'") + '"';
+    }
+
     downloadComponents(components, header) {
-      let headerContent = header.map(cell => `"${cell.name}"`).join(',');
-      let csvContent = components.map((row, index) => {
-        // expandableContent={this.props.expandableContent(row)}>
-        let csvRow = header.map(cell => {
-          if (cell.name === "Image") {
-            return `"${cell.displayGetter(row)?.props?.src || ''}"`;
-          } else {
-            return '"' + this.extractText(cell.displayGetter(row)).trim().replace('"', "'") + '"';
-          }
-        }).join(',');
+        let headerContent = header.map(cell => `"${cell.name}"`).join(',');
+        let csvContent = components.map((row, index) => {
+            // expandableContent={this.props.expandableContent(row)}>
+            let csvRow = header.map(cell => {
 
-        return csvRow;
-      }).join('\n');
+                if (cell.name === "Image")
+                    return `"${cell.displayGetter(row)?.props?.src || ''}"`;
 
-      const blob = new Blob([`${headerContent}\n${csvContent}`], { type: "text/csv;charset=utf-8" });
-      saveAs(blob, `components-${components.length}.csv`);
+                else if (cell.name === "Category"){
+
+                    // FIXME: this is repeated from SortableTable ctor.
+                    var allSubCategories = this.state.categories.map(category => category.subcategories).flat();
+
+                    // FIXME: this is duplicated from table row and should not be repeated.
+                    var categoryText = manuallyGetCategory(cell, row, allSubCategories);
+                    return this.quoteForCSV(categoryText);
+
+                } else
+                    return this.quoteForCSV(cell.displayGetter(row));
+
+            }).join(',');
+
+            return csvRow;
+
+        }).join('\n');
+
+        const blob = new Blob([`${headerContent}\n${csvContent}`], { type: "text/csv;charset=utf-8" });
+        saveAs(blob, `components-${components.length}.csv`);
     }
 
     handleFavoritesOnly = (favoritesOnly) => {

@@ -43,10 +43,7 @@ function SortableHeaderField(props) {
 }
 
 
-function fillTableCell(cell, rowFromDataModel, allSubcategories){
-
-
-
+export function manuallyGetCategory(cell, rowFromDataModel, allSubcategories){
     // It seems some components are missing category in the pretty attributes
     var componentHasCategory = "Category" in rowFromDataModel.attributes;
     // So we will hardcode to look it up from the ID.
@@ -66,9 +63,21 @@ function fillTableCell(cell, rowFromDataModel, allSubcategories){
     // Maybe add the ID as reference?
     var categoryText         = category.value
 
+    return categoryText;
+
+}
+
+
+
+function fillTableCell(cell, rowFromDataModel, allSubcategories){
+
+
+    var categoryText = manuallyGetCategory(cell, rowFromDataModel, allSubcategories);
+
 
     if (cell.name == "Category")
         return categoryText;
+
 
     // Else if not category, continue with the original method.
     // Aside form handling categories, some components seem to be missing properties here even when they are present in the JLCPCB site or in
